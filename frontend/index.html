@@ -18,21 +18,26 @@ Licensed under the Apache License, Version 2.0 (the "License");
 </head>
 <body>
   <div id="logged-out">
-    <h1>Firenotes</h1>
-    <h3>Sign in to access your notebook</h3>
+    <h1>PrintHub</h1>
+    <h3>Sign in to add your orders</h3>
     <div id="firebaseui-auth-container"></div>
   </div>
 
   <div id="logged-in">
     <h1>Welcome, <span id="user"></span>!</h1>
-    <h3>Enter a note and save it to your personal notebook</h3>
+    <h3>Upload your file and add an order</h3>
   <div id="form">
     <form action="" method="post">
       <div class="form-group">
-        <textarea id="note-content"></textarea>
+        <input type="file" id="file-input">
       </div>
+      <select id="hub-select">
+        <option value="pim1">PIM Copou</option>
+        <option value="pim2">PIM Independentei</option>
+        <option value="pim3">PIM Palas</option>
+      </select>
       <div class="form-group">
-        <button id="add-note">Save note</button>
+        <button id="add-note">Add order</button>
         <button id="sign-out">Sign out</button> 
       </div>
     </form>
