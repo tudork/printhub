@@ -21,7 +21,7 @@ from google.appengine.ext import ndb
 import google.auth.transport.requests
 import google.oauth2.id_token
 import requests_toolbelt.adapters.appengine
-import logging
+
 # Use the App Engine Requests adapter. This makes sure that Requests uses
 # URLFetch.
 requests_toolbelt.adapters.appengine.monkeypatch()
@@ -39,9 +39,6 @@ class Note(ndb.Model):
     """
     friendly_id = ndb.StringProperty()
     message = ndb.TextProperty()
-    filename = ndb.StringProperty()
-    hub = ndb.StringProperty()
-    status = ndb.TextProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
 # [END note]
 
@@ -63,12 +60,9 @@ def query_database(user_id):
         note_messages.append({
             'friendly_id': note.friendly_id,
             'message': note.message,
-            'filename': note.filename,
-            'hub': note.hub,
-            'status': note.status,
             'created': note.created
         })
-    print(note_messages)
+
     return note_messages
 # [END query_database]
 
@@ -118,10 +112,7 @@ def add_note():
     # with the user ID as the key name.
     note = Note(
         parent=ndb.Key(Note, claims['sub']),
-        message=data['message'],
-        filename=data['filename'],
-        hub=data['hub'],
-        status=data['status'])
+        message=data['message'])
 
     # Some providers do not provide one of these so either can be used.
     note.friendly_id = claims.get('name', claims.get('email', 'Unknown'))

@@ -105,10 +105,7 @@ $(function(){
       $('#notes-container').empty();
       // Iterate over user data to display user's notes from database.
       data.forEach(function(note){
-        $('#notes-container').append($('<p>').text(note.message + '2 ' +
-                                                   note.friendly_id + ' ' +
-                                                   note.hub + ' ' +
-                                                   note.status));
+        $('#notes-container').append($('<p>').text(note.message));
       });
     });
   }
@@ -136,8 +133,7 @@ $(function(){
 
     //var noteField = $('#note-content');
     var fileName = $('#file-input').val();
-    var hub = $('#hub-select').val();
-
+    //var note = noteField.val();
      $('#file-input').val("");
 
     /* Send note data to backend, storing in database with existing data
@@ -147,8 +143,7 @@ $(function(){
         'Authorization': 'Bearer ' + userIdToken
       },
       method: 'POST',
-      data: JSON.stringify({'message': fileName, 'filename': fileName,
-                            'hub': hub, 'status': 'waiting'}),
+      data: JSON.stringify({'message': fileName}),
       contentType : 'application/json'
     }).then(function(){
       // Refresh notebook display.
