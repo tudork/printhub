@@ -32,7 +32,7 @@ $(function(){
 
   // This is passed into the backend to authenticate the user.
   var userIdToken = null;
-  var name;
+
   // Firebase log-in
   function configureFirebaseLogin() {
 
@@ -43,8 +43,6 @@ $(function(){
       if (user) {
         $('#logged-out').hide();
         var name = user.displayName;
-		if name == 'pim' $('.form-group').hide();
-		
 
         /* If the provider gives a display name, use the name for the
         personal welcome message. Otherwise, use the user's email. */
@@ -54,8 +52,7 @@ $(function(){
           userIdToken = idToken;
 
           /* Now that the user is authenicated, fetch the notes. */
-		  if name== 'pim' fetchOrders();
-          else fetchNotes();
+          fetchNotes();
 
           $('#user').text(welcomeName);
           $('#logged-in').show();
@@ -108,27 +105,8 @@ $(function(){
       $('#notes-container').empty();
       // Iterate over user data to display user's notes from database.
       data.forEach(function(note){
-        $('#notes-container').append($('<p>').text(note.friendly_id + '2 ' +
-                                                   note.filename + ' ' +
-                                                   note.hub + ' ' +
-                                                   note.status));
-      });
-    });
-  }
-  
-  function fetchOrders() {
-    $.ajax(backendHostUrl + '/orders', {
-      /* Set header for the XMLHttpRequest to get data from the web server
-      associated with userIdToken */
-      headers: {
-        'Authorization': 'Bearer ' + userIdToken
-      }
-    }).then(function(data){
-      $('#notes-container').empty();
-      // Iterate over user data to display user's notes from database.
-      data.forEach(function(note){
-        $('#notes-container').append($('<p>').text(note.friendly_id + ' ' +
-                                                   note.filename + ' ' +
+        $('#notes-container').append($('<p>').text(note.message + '2 ' +
+                                                   note.friendly_id + ' ' +
                                                    note.hub + ' ' +
                                                    note.status));
       });
