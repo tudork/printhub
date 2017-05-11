@@ -131,10 +131,9 @@ $(function(){
   saveNoteBtn.click(function(event) {
     event.preventDefault();
 
-    //var noteField = $('#note-content');
-    var fileName = $('#file-input').val();
-    //var note = noteField.val();
-     $('#file-input').val("");
+    var noteField = $('#note-content');
+    var note = noteField.val();
+    noteField.val("");
 
     /* Send note data to backend, storing in database with existing data
     associated with userIdToken */
@@ -143,7 +142,7 @@ $(function(){
         'Authorization': 'Bearer ' + userIdToken
       },
       method: 'POST',
-      data: JSON.stringify({'message': fileName}),
+      data: JSON.stringify({'message': note}),
       contentType : 'application/json'
     }).then(function(){
       // Refresh notebook display.
