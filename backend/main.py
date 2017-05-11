@@ -38,13 +38,18 @@ class Note(ndb.Model):
     Key is user id from decrypted token.
     """
     friendly_id = ndb.StringProperty()
-    message = ndb.TextProperty()
     filename = ndb.StringProperty()
     hub = ndb.StringProperty()
     status = ndb.TextProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
 # [END note]
 
+class Order(ndb.Model):
+	friendly_id = ndb.StringProperty()
+    filename = ndb.StringProperty()
+    hub = ndb.StringProperty()
+    status = ndb.TextProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
 
 # [START query_database]
 def query_database(user_id):
@@ -62,16 +67,35 @@ def query_database(user_id):
     for note in notes:
         note_messages.append({
             'friendly_id': note.friendly_id,
-            'message': note.message,
             'filename': note.filename,
             'hub': note.hub,
             'status': note.status,
             'created': note.created
         })
-    print(note_messages)
     return note_messages
 # [END query_database]
 
+def query_orders():
+    """Fetches all notes associated with user_id.
+
+    Notes are ordered them by date created, with most recent note added
+    first.
+    """
+    #ancestor_key = ndb.Key(Note, user_id)
+    query = Order.query().order(-Note.created)
+    order = query.fetch()
+
+    order_messages = []
+
+    for order in orders:
+        order_messages.append({
+            'friendly_id': note.friendly_id,
+            'filename': note.filename,
+            'hub': note.hub,
+            'status': note.status,
+            'created': note.created
+        })
+    return order_messages
 
 # [START list_notes]
 @app.route('/notes', methods=['GET'])
@@ -92,6 +116,23 @@ def list_notes():
     return jsonify(notes)
 # [END list_notes]
 
+@app.route('/orders', methods=['GET'])
+def list_orders():
+    """Returns a list of notes added by the current Firebase user."""
+
+    # Verify Firebase auth.
+    # [START verify_token]
+    id_token = request.headers['Authorization'].split(' ').pop()
+    claims = google.oauth2.id_token.verify_firebase_token(
+        id_token, HTTP_REQUEST)
+    if not claims:
+        return 'Unauthorized', 401
+    # [END verify_token]
+
+    orders = query_orders()
+
+    return jsonify(orders)
+# [END list_notes]
 
 # [START add_note]
 @app.route('/notes', methods=['POST', 'PUT'])
@@ -118,7 +159,6 @@ def add_note():
     # with the user ID as the key name.
     note = Note(
         parent=ndb.Key(Note, claims['sub']),
-        message=data['message'],
         filename=data['filename'],
         hub=data['hub'],
         status=data['status'])
